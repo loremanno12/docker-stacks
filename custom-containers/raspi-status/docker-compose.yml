@@ -1,0 +1,32 @@
+services:
+
+  raspi-status:
+    container_name: raspi-status
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "6969:6969"
+    environment:
+      - HOST_IP=192.168.0.30
+    volumes:
+      - /usr/bin/vcgencmd:/usr/bin/vcgencmd:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - raspi-status-logs:/app/logs
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+    privileged: true
+    network_mode: host
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "2"
+    restart: unless-stopped
+
+volumes:
+  raspi-status-logs:

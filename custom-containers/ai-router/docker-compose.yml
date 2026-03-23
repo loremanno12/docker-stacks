@@ -1,0 +1,29 @@
+services:
+
+  ai-router:
+    container_name: ai-router
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./models:/app/models
+      - ai-router-logs:/app/logs
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+    networks:
+      - internal_net
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "2"
+    restart: unless-stopped
+
+volumes:
+  ai-router-logs:
+
+networks:
+  internal_net:
+    external: true
